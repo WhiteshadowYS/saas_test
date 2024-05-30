@@ -10,7 +10,12 @@ class AppRouter extends $AppRouter {
   List<AutoRoute> get routes {
     return [
       AutoRoute(
-        path: 'auth',
+        path: '/splash',
+        page: SplashRoute.page,
+        initial: true,
+      ),
+      AutoRoute(
+        path: '/auth',
         page: LoginRoute.page,
       ),
     ];

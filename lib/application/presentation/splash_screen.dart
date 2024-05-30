@@ -2,8 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class LoginScreen extends StatelessWidget {
       body: Container(
         color: Colors.deepOrange,
         child: Center(
-          child: Text('Login Screen'),
+          child: Text('Splash Screen'),
         ),
       ),
     );
