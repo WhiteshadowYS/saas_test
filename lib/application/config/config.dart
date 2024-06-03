@@ -1,35 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'package:saas/application/config/config.config.dart';
+import 'package:saas/application/router/app_router.dart';
+import 'package:saas/application/router/common_router.dart';
+import 'package:saas/sources/develop/router/enviroment_router.dart' as developEnv;
+import 'package:saas/sources/validation/router/enviroment_router.dart' as validationEnv;
 
-late final GetIt getIt;
+import 'config.config.dart';
 
-class Config {
-  String get envName => dotenv.get('ENVIRONMENT_NAME');
-  String get apiUrl => dotenv.get('API_URL');
+const regular = const Environment('default');
+const develop = const Environment('develop');
+const validation = const Environment('validation');
 
-  Future<void> init() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initEnv(null);
-    initDependencies(this);
-  }
+ValueNotifier<GetIt?> _getItNitifier = ValueNotifier(null);
+ValueNotifier<GetIt?> get getItNotifierGetter => _getItNitifier;
+GetIt get getIt => _getItNitifier.value!;
 
-  Future<void> initEnv(String? envName) async {
-    try {
-      await dotenv.load(fileName: 'environments/.env.default');
-    } catch (e) {
-      print('Dot Env load catch error, $e');
-      await dotenv.load(fileName: 'environments/.env.default');
-    }
-  }
+@InjectableInit()
+void configureDependencies(String environment) {
+  _getItNitifier.value = GetIt.asNewInstance();
+  getIt.init(environment: environment);
 }
 
-@injectableInit
-void initDependencies(Config config) async {
-  getIt = GetIt.asNewInstance();
-  final gh = GetItHelper(getIt, config.envName);
-  gh.singleton<Config>(config);
-  getIt.init(environment: config.envName);
+@module
+abstract class RegisterModule {
+  @injectable
+  @regular
+  AppRouter get commonRouter => AppRouter(router: CommonRouter.getRouter);
+
+  @injectable
+  @develop
+  AppRouter get developRouter => AppRouter(router: developEnv.EnvironmentRouter.getRouter);
+
+  @injectable
+  @validation
+  AppRouter get validationRouter => AppRouter(router: validationEnv.EnvironmentRouter.getRouter);
 }

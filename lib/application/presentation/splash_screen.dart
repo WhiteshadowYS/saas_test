@@ -1,7 +1,5 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-@RoutePage()
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
@@ -9,10 +7,9 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        alignment: Alignment.center,
         color: Colors.deepOrange,
-        child: Center(
-          child: Text('Splash Screen'),
-        ),
+        child: Text('Splash screen'),
       ),
     );
   }
