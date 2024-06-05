@@ -42,3 +42,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Other source instances
+# Ignore all folders starting from lib/sources/*
+lib/sources/*/
+
+# Except lib/sources/main and its contents
+!lib/sources/main/
+!lib/sources/main/**

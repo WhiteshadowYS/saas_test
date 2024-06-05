@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:saas/application/router/app_router.dart';
 
+import '../../config/config.dart';
+
 class HomeScreen extends StatelessWidget {
   final SetEnvironmentCallback setEnvironmentCallback;
   HomeScreen({
@@ -10,7 +12,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Development Home'),
+        title: Text('$enviromentName Home'),
       ),
       body: Container(
         color: Colors.blueAccent,
@@ -18,7 +20,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Welcome to the Development Environment'),
+              Text('Welcome to the $enviromentName Environment'),
               ElevatedButton(
                 onPressed: () => setEnvironmentCallback('default'),
                 child: Text('Logout'),

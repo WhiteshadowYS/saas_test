@@ -101,6 +101,9 @@ const Environment $name = Environment(enviromentName);"
      else
      echo "Failed to create the file at $CONFIG_FILE_PATH"
      fi
+
+     cd ../../
+     dart run build_runner build --delete-conflicting-outputs
 }
 
 remove() {
@@ -148,6 +151,9 @@ remove() {
      rm -rf $pathToNewContentFolder
      printf "Removing Success!!!\n"
      printf "\n"
+
+     cd ../../
+     dart run build_runner build --delete-conflicting-outputs
 }
 
 
