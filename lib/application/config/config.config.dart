@@ -12,13 +12,11 @@
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 import 'package:saas/application/router/app_router.dart' as _i3;
-import 'package:saas/application/router/common_router.dart' as _i6;
-import 'package:saas/sources/develop/router/enviroment_router.dart' as _i4;
-import 'package:saas/sources/validation/router/enviroment_router.dart' as _i5;
+import 'package:saas/application/router/common_router.dart' as _i4;
+import 'package:saas/sources/main/router/enviroment_router.dart' as _i5;
 
-const String _develop = 'develop';
-const String _validation = 'validation';
 const String _default = 'default';
+const String _develop = 'develop';
 
 extension GetItInjectableX on _i1.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -32,16 +30,12 @@ extension GetItInjectableX on _i1.GetIt {
       environmentFilter,
     );
     gh.factory<_i3.AppRouter>(
-      () => _i4.EnvironmentRouter(),
-      registerFor: {_develop},
+      () => _i4.CommonRouter(),
+      registerFor: {_default},
     );
     gh.factory<_i3.AppRouter>(
       () => _i5.EnvironmentRouter(),
-      registerFor: {_validation},
-    );
-    gh.factory<_i3.AppRouter>(
-      () => _i6.CommonRouter(),
-      registerFor: {_default},
+      registerFor: {_develop},
     );
     return this;
   }

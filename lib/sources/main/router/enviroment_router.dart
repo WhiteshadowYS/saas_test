@@ -2,8 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 import 'package:saas/application/presentation/login_screen.dart';
 import 'package:saas/application/router/app_router.dart';
-import 'package:saas/sources/develop/config/config.dart';
-import 'package:saas/sources/develop/screens/home/home_screen.dart';
+import 'package:saas/sources/main/config/config.dart';
+import 'package:saas/sources/main/screens/home/home_screen.dart';
 
 @Injectable(as: AppRouter, env: [enviromentName])
 class EnvironmentRouter implements AppRouter {
