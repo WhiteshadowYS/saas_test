@@ -1,17 +1,33 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:saas/application/router/app_router.dart';
 
-@RoutePage()
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  final SetEnvironmentCallback setEnvironmentCallback;
+
+  const LoginScreen({
+    required this.setEnvironmentCallback,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.deepOrange,
-        child: Center(
-          child: Text('Login Screen'),
+      backgroundColor: Colors.deepOrange,
+      appBar: AppBar(
+        title: Text('Select Environment'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () => setEnvironmentCallback('develop'),
+              child: Text('Login to Development'),
+            ),
+            ElevatedButton(
+              onPressed: () => setEnvironmentCallback('validation'),
+              child: Text('Login to Validation'),
+            ),
+          ],
         ),
       ),
     );

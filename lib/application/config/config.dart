@@ -1,35 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'package:saas/application/config/config.config.dart';
 
-late final GetIt getIt;
+import 'config.config.dart';
 
-class Config {
-  String get envName => dotenv.get('ENVIRONMENT_NAME');
-  String get apiUrl => dotenv.get('API_URL');
+const regular = const Environment('default');
 
-  Future<void> init() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initEnv(null);
-    initDependencies(this);
-  }
+ValueNotifier<GetIt?> _getItNitifier = ValueNotifier(null);
+ValueNotifier<GetIt?> get getItNotifierGetter => _getItNitifier;
+GetIt get getIt => _getItNitifier.value!;
 
-  Future<void> initEnv(String? envName) async {
-    try {
-      await dotenv.load(fileName: 'environments/.env.default');
-    } catch (e) {
-      print('Dot Env load catch error, $e');
-      await dotenv.load(fileName: 'environments/.env.default');
-    }
-  }
-}
-
-@injectableInit
-void initDependencies(Config config) async {
-  getIt = GetIt.asNewInstance();
-  final gh = GetItHelper(getIt, config.envName);
-  gh.singleton<Config>(config);
-  getIt.init(environment: config.envName);
+@InjectableInit()
+void configureDependencies(String environment) {
+  _getItNitifier.value = GetIt.asNewInstance();
+  getIt.init(environment: environment);
 }
