@@ -95,7 +95,9 @@ add_environment() {
 
     # Validate required variables
     check_var "$env_name" "ENV_NAME"
-    check_var "$env_link" "ENV_LINK"
+    if [ -z "$commit_code" ]; then
+        check_var "$env_link" "ENV_LINK"
+    fi
 
     local path_to_download="lib/sources"
     local path_to_new_content_folder="./$env_name"
