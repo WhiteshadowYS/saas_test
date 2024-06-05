@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
         title: Text('$enviromentName Home'),
       ),
       body: Container(
-        color: Colors.blueAccent,
+        color: Colors.red,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
