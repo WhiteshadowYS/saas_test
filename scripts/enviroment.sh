@@ -99,7 +99,7 @@ add() {
      pathToDownload="lib/sources"
      pathToNewContentFolder="./$name"
      mainFolderName="saas_test"
-     pathToCopy="$mainFolderName/lib/sources/main/."
+     pathToCopy="$mainFolderName/lib/sources/local/."
      printf "Setup Success!!!\n"
 
      printf "\n"

@@ -16,7 +16,7 @@ import 'package:saas/application/router/common_router.dart' as _i4;
 import 'package:saas/sources/local/router/enviroment_router.dart' as _i5;
 
 const String _default = 'default';
-const String _develop = 'develop';
+const String _local = 'local';
 
 extension GetItInjectableX on _i1.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -35,7 +35,7 @@ extension GetItInjectableX on _i1.GetIt {
     );
     gh.factory<_i3.AppRouter>(
       () => _i5.EnvironmentRouter(),
-      registerFor: {_develop},
+      registerFor: {_local},
     );
     return this;
   }
