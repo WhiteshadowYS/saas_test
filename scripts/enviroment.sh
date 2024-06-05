@@ -1,217 +1,195 @@
 #!/bin/bash
-#SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-#source "$SCRIPT_DIR/check_env.sh"
-#default_home="$( cd "$SCRIPT_DIR/.." && pwd)"
-#default_name=$(basename $default_home)
-#PROJECT_HOME=$(echo "$default_name" | tr a-z A-Z)
-#PROJECT_HOME_NAME="${PROJECT_HOME}_HOME"
-#PROJECT_HOME=$(eval echo \$$PROJECT_HOME_NAME)
 
-printf "\n"
-printf "Enviroment Setup\n"
+# Define constants
+REPOSITORY_URL="https://github.com/WhiteshadowYS/saas_test.git"
 
+# Function to check if a variable is set
+check_var() {
+    if [ -z "$1" ]; then
+        echo "Error: $2 is not set."
+        exit 1
+    fi
+}
+
+# Function to generate the environments list
 generate_environments_list() {
-     # Define the path variable where the folders are located
-     SOURCES_PATH="$1"
-     FILE_PATH="$2"
+    local sources_path="$1"
+    local file_path="$2"
+    local output_file="$file_path/environments.dart"
 
-     # Define the output Dart file path
-     OUTPUT_FILE="$FILE_PATH/environments.dart"
+    # Validate paths
+    check_var "$sources_path" "SOURCES_PATH"
+    check_var "$file_path" "FILE_PATH"
 
-     # Start the Dart code for the environments.dart file
-     echo "const List<String> environments = [" > "$OUTPUT_FILE"
+    echo "const List<String> environments = [" > "$output_file"
 
-     # Read the list of folders and append them to the Dart file
-     for dir in "$SOURCES_PATH"/*/; do
-          if [ -d "$dir" ]; then
-               folder_name=$(basename "$dir")
-               echo "  '$folder_name'," >> "$OUTPUT_FILE"
-          fi
-     done
+    for dir in "$sources_path"/*/; do
+        if [ -d "$dir" ]; then
+            folder_name=$(basename "$dir")
+            echo "  '$folder_name'," >> "$output_file"
+        fi
+    done
 
-     # Close the Dart list
-     echo "];" >> "$OUTPUT_FILE"
+    echo "];" >> "$output_file"
 
-     # Confirm the creation of the file
-     if [ -f "$OUTPUT_FILE" ]; then
-          echo "File 'environments.dart' has been created at $OUTPUT_FILE"
-     else
-          echo "Failed to create the file at $OUTPUT_FILE"
-     fi
+    if [ -f "$output_file" ]; then
+        echo "File 'environments.dart' has been created at $output_file"
+    else
+        echo "Failed to create the file at $output_file"
+    fi
 }
 
-add() {
-     printf "Adding active enviroments...\n"
-     # Parse parrams for function
-     while [ $# -gt 1 ]; do
-     case "$2" in
-          -n|--env_name)
-          name="$3"
-          ;;
-          -l|--env_link)
-          link="$3"
-          ;;
-     *)
-          printf "Avaivalbe arguments: \n"
-          printf "       [-n|--env_name]*      - Name of enviroment \n"    
-          printf "       [-l|--env_link]*      - Link to enviroment git \n"    
-          exit 1
-     esac
-     shift
-     shift
-     done
+# Function to setup config
+setup_config() {
+    local path_to_new_content_folder="$1"
+    local env_name="$2"
+    local config_file_path="$path_to_new_content_folder/config/config.dart"
+    local config_file_content="import 'package:injectable/injectable.dart';
 
-     # Exit if [name] was null
-     if [[ -z "$name" ]]; then
-          printf "\n"
-          printf "##########################################################   \n"
-          printf "\n"
-          printf "  [name] was null! Please set all requared params.          \n"
-          printf "  All requared params: env_name, env_link                    \n"
-          printf "  Use -h or --help to see all avaivable commands...           \n"
-          printf "\n"
-          printf "##########################################################  \n"
-          printf "\n"
-          printf "Enviroment Setup Failed...\n"
-          exit 1
-     fi
-     printf "Enviroment name: $name \n"
+const String enviromentName = '$env_name';
+const Environment $env_name = Environment(enviromentName);"
 
-      # Exit if [link] was null
-     if [[ -z "$link" ]]; then
-          printf "\n"
-          printf "##########################################################   \n"
-          printf "\n"
-          printf "  [link] was null! Please set all requared params.          \n"
-          printf "  All requared params: env_name, env_link                    \n"
-          printf "  Use -h or --help to see all avaivable commands...           \n"
-          printf "\n"
-          printf "##########################################################  \n"
-          printf "\n"
-          printf "Enviroment Setup Failed...\n"
-          exit 1
-     fi
-     printf "Enviroment link: $link \n"
+    rm "$config_file_path/config.dart"
+    echo "$config_file_content" > "$config_file_path"
 
-     printf "\n"
-     printf "Settuping variables...\n"
-     repository="https://github.com/WhiteshadowYS/saas_test.git"
-     pathToDownload="lib/sources"
-     pathToNewContentFolder="./$name"
-     mainFolderName="saas_test"
-     pathToCopy="$mainFolderName/lib/sources/local/."
-     printf "Setup Success!!!\n"
-
-     printf "\n"
-     printf "Downloading...\n"
-     cd $pathToDownload
-     git clone -b $link $repository
-     mkdir $pathToNewContentFolder
-     cp -R $pathToCopy $pathToNewContentFolder
-     rm -rf $mainFolderName
-     printf "Downloading Success!!!\n"
-     printf "\n"
-     
-     printf "\n"
-     printf "Settuping config..."
-     # Define the path variable
-     CONFIG_FILE_PATH="$pathToNewContentFolder/config/config.dart"
-     CONFIG_FILE_CONTENT="import 'package:injectable/injectable.dart';
-
-const String enviromentName = '$name';
-const Environment $name = Environment(enviromentName);"
-
-     rm "$CONFIG_FILE_PATH/config.dart"
-     # Create the file and write the content
-     echo "$CONFIG_FILE_CONTENT" > "$CONFIG_FILE_PATH"
-
-     # Confirm the creation of the file
-     if [ -f "$CONFIG_FILE_PATH" ]; then
-     echo "File 'config.dart' has been created at $CONFIG_FILE_PATH"
-     else
-     echo "Failed to create the file at $CONFIG_FILE_PATH"
-     fi
-
-     cd ../../
-     dart run build_runner build --delete-conflicting-outputs
-
-     generate_environments_list "lib/sources" "lib/application/config"
+    if [ -f "$config_file_path" ]; then
+        echo "File 'config.dart' has been created at $config_file_path"
+    else
+        echo "Failed to create the file at $config_file_path"
+    fi
 }
 
-remove() {
-     printf "Removing active enviroments...\n"
-     # Parse parrams for function
-     while [ $# -gt 1 ]; do
-     case "$2" in
-           -n|--env_name)
-          name="$3"
-          ;;
-     *)
-          printf "Avaivalbe arguments: \n"
-          printf "       [-e|--env]*      - Enviroment name \n"
-          exit 1
-     esac
-     shift
-     shift
-     done
-
-     # Exit if [name] was null
-     if [[ -z "$name" ]]; then
-          printf "\n"
-          printf "##########################################################   \n"
-          printf "\n"
-          printf "  [name] was null! Please set all requared params.          \n"
-          printf "  All requared params: env_name                          \n"
-          printf "  Use -h or --help to see all avaivable commands...           \n"
-          printf "\n"
-          printf "##########################################################  \n"
-          printf "\n"
-          printf "Enviroment Setup Failed...\n"
-          exit 1
-     fi
-     printf "Enviroment name: $name \n"
-
-     printf "\n"
-     printf "Settuping variables...\n"
-     pathToDownload="lib/sources"
-     pathToNewContentFolder="./$name"
-     printf "Setup Success!!!\n"
-
-     printf "\n"
-     printf "Removing...\n"
-     cd $pathToDownload
-     rm -rf $pathToNewContentFolder
-     printf "Removing Success!!!\n"
-     printf "\n"
-
-     cd ../../
-     dart run build_runner build --delete-conflicting-outputs
-     generate_environments_list "lib/sources" "lib/application/config"
+# Function to generate DI code
+generate_di_code() {
+    cd ../../
+    dart run build_runner build --delete-conflicting-outputs
 }
 
+# Function to add environment
+add_environment() {
+    local env_name=""
+    local env_link=""
+    local commit_code=""
 
-# Help
+    while [ $# -gt 1 ]; do
+        case "$1" in
+            -n|--env_name)
+                env_name="$2"
+                ;;
+            -l|--env_link)
+                env_link="$2"
+                ;;
+            -c|--commit_code)
+                commit_code="$2"
+                ;;
+            *)
+                echo "Available arguments:"
+                echo "  [-n|--env_name]* - Name of environment"
+                echo "  [-l|--env_link]* - Link to environment git"
+                echo "  [-c|--commit_code] - Commit code for specific version"
+                exit 1
+        esac
+        shift
+        shift
+    done
+
+    # Validate required variables
+    check_var "$env_name" "ENV_NAME"
+    check_var "$env_link" "ENV_LINK"
+
+    local path_to_download="lib/sources"
+    local path_to_new_content_folder="./$env_name"
+    local main_folder_name="saas_test"
+    local path_to_copy="$main_folder_name/lib/sources/local/."
+
+    # Clone the repository
+    cd $path_to_download
+    git clone $REPOSITORY_URL $main_folder_name
+
+    if [ -n "$commit_code" ]; then
+        cd $main_folder_name
+        git checkout $commit_code
+        cd ..
+    else
+        cd $main_folder_name
+        git checkout $env_link
+        cd ..
+    fi
+
+    mkdir $path_to_new_content_folder
+    cp -R $path_to_copy $path_to_new_content_folder
+    rm -rf $main_folder_name
+
+    setup_config "$path_to_new_content_folder" "$env_name"
+
+    generate_di_code
+
+    generate_environments_list "lib/sources" "lib/application/config"
+}
+
+# Function to remove environment
+remove_environment() {
+    local env_name=""
+
+    while [ $# -gt 1 ]; do
+        case "$1" in
+            -n|--env_name)
+                env_name="$2"
+                ;;
+            *)
+                echo "Available arguments:"
+                echo "  [-n|--env_name]* - Environment name"
+                exit 1
+        esac
+        shift
+        shift
+    done
+
+    # Validate required variable
+    check_var "$env_name" "ENV_NAME"
+
+    local path_to_download="lib/sources"
+    local path_to_new_content_folder="./$env_name"
+
+    cd $path_to_download
+    rm -rf $path_to_new_content_folder
+
+    generate_di_code
+    generate_environments_list "lib/sources" "lib/application/config"
+}
+
+# Main script logic
+printf "\n"
+printf "Environment Setup\n"
+
 if ([ -z "$1" ]); then
-     printf "Avaivalbe commands:\n"
-     printf "  add       - Add new active enviroments to application \n"
-     printf "                 [-e|--env]*      - Map of enviroments with Git links [env_name, git_link] \n"     
-     printf "  remove    - Remove active enviroments from application \n"
-     printf "                 [-e|--env]*      - List of enviroment names what should be removed \n"    
-     exit 1
-
-elif [ $1 == "add" ]; then
-     add $*
-     exit 1
-
-elif [ $1 == "remove" ]; then
-     remove $*
-     exit 1
-
-else
-     printf "Avaivalbe commands:\n"
-     printf "  add       - Add new active enviroments to application \n"
-     printf "                 [-e|--env]*      - Map of enviroments with Git links [env_name, git_link] \n"     
-     printf "  remove    - Remove active enviroments from application \n"
-     printf "                 [-e|--env]*      - List of enviroment names what should be removed \n"    
-     exit 1
+    echo "Available commands:"
+    echo "  add    - Add new active environments to application"
+    echo "            [-n|--env_name]* - Name of environment"
+    echo "            [-l|--env_link]* - Link to environment git"
+    echo "            [-c|--commit_code] - Commit code for specific version"
+    echo "  remove - Remove active environments from application"
+    echo "            [-n|--env_name]* - Name of environment"
+    exit 1
 fi
+
+case "$1" in
+    add)
+        shift
+        add_environment $*
+        ;;
+    remove)
+        shift
+        remove_environment $*
+        ;;
+    *)
+        echo "Available commands:"
+        echo "  add    - Add new active environments to application"
+        echo "            [-n|--env_name]* - Name of environment"
+        echo "            [-l|--env_link]* - Link to environment git"
+        echo "            [-c|--commit_code] - Commit code for specific version"
+        echo "  remove - Remove active environments from application"
+        echo "            [-n|--env_name]* - Name of environment"
+        exit 1
+        ;;
+esac
