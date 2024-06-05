@@ -10,6 +10,36 @@
 printf "\n"
 printf "Enviroment Setup\n"
 
+generate_environments_list() {
+     # Define the path variable where the folders are located
+     SOURCES_PATH="$1"
+     FILE_PATH="$2"
+
+     # Define the output Dart file path
+     OUTPUT_FILE="$FILE_PATH/environments.dart"
+
+     # Start the Dart code for the environments.dart file
+     echo "const List<String> environments = [" > "$OUTPUT_FILE"
+
+     # Read the list of folders and append them to the Dart file
+     for dir in "$SOURCES_PATH"/*/; do
+          if [ -d "$dir" ]; then
+               folder_name=$(basename "$dir")
+               echo "  '$folder_name'," >> "$OUTPUT_FILE"
+          fi
+     done
+
+     # Close the Dart list
+     echo "];" >> "$OUTPUT_FILE"
+
+     # Confirm the creation of the file
+     if [ -f "$OUTPUT_FILE" ]; then
+          echo "File 'environments.dart' has been created at $OUTPUT_FILE"
+     else
+          echo "Failed to create the file at $OUTPUT_FILE"
+     fi
+}
+
 add() {
      printf "Adding active enviroments...\n"
      # Parse parrams for function
@@ -104,6 +134,8 @@ const Environment $name = Environment(enviromentName);"
 
      cd ../../
      dart run build_runner build --delete-conflicting-outputs
+
+     generate_environments_list "lib/sources" "lib/application/config"
 }
 
 remove() {
@@ -154,6 +186,7 @@ remove() {
 
      cd ../../
      dart run build_runner build --delete-conflicting-outputs
+     generate_environments_list "lib/sources" "lib/application/config"
 }
 
 

@@ -13,7 +13,7 @@ import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 import 'package:saas/application/router/app_router.dart' as _i3;
 import 'package:saas/application/router/common_router.dart' as _i4;
-import 'package:saas/sources/main/router/enviroment_router.dart' as _i5;
+import 'package:saas/sources/local/router/enviroment_router.dart' as _i5;
 
 const String _default = 'default';
 const String _develop = 'develop';

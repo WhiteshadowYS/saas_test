@@ -48,5 +48,5 @@ app.*.map.json
 lib/sources/*/
 
 # Except lib/sources/main and its contents
-!lib/sources/main/
-!lib/sources/main/**
+!lib/sources/local/
+!lib/sources/local/**

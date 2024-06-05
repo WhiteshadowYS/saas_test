@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saas/application/config/environments.dart';
 import 'package:saas/application/router/app_router.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -19,14 +20,11 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () => setEnvironmentCallback('develop'),
-              child: Text('Login to Development'),
-            ),
-            ElevatedButton(
-              onPressed: () => setEnvironmentCallback('validation'),
-              child: Text('Login to Validation'),
-            ),
+            for (final env in environments)
+              ElevatedButton(
+                onPressed: () => setEnvironmentCallback(env),
+                child: Text('Login to $env environment'),
+              ),
           ],
         ),
       ),
