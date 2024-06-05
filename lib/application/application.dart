@@ -17,7 +17,7 @@ class _ApplicationState extends State<Application> {
   @override
   void initState() {
     super.initState();
-    _goRouter = AppRouter.instance.router(_setEnvironment);
+    _goRouter = AppRouter.instance.getRouter(_setEnvironment);
   }
 
   @override
@@ -29,13 +29,19 @@ class _ApplicationState extends State<Application> {
 
   void _setEnvironment(String environment) async {
     await _loadEnvironmentData(environment);
-    setState(() => _goRouter = AppRouter.instance.router(_setEnvironment));
-    _goRouter.go('/home');
+    setState(() => _goRouter = AppRouter.instance.getRouter(_setEnvironment));
+
+    switch (environment) {
+      case 'default':
+        _goRouter.go('/');
+        break;
+      default:
+        _goRouter.go('/home');
+    }
   }
 
   Future<void> _loadEnvironmentData(String environment) async {
     final fileName = "environments/.env.$environment";
-    print(fileName);
     await dotenv.load(fileName: fileName);
     configureDependencies(environment);
   }

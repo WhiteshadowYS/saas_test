@@ -4,10 +4,7 @@ import 'package:saas/application/config/config.dart';
 typedef SetEnvironmentCallback = void Function(String);
 typedef GetRouterFunction = GoRouter Function(SetEnvironmentCallback);
 
-class AppRouter {
+abstract class AppRouter {
   static AppRouter get instance => getIt<AppRouter>();
-
-  final GetRouterFunction router;
-
-  AppRouter({required this.router});
+  GetRouterFunction get getRouter;
 }

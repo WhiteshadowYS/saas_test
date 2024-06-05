@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:saas/application/router/app_router.dart';
 
 class HomeScreen extends StatelessWidget {
+  final SetEnvironmentCallback setEnvironmentCallback;
+  HomeScreen({
+    required this.setEnvironmentCallback,
+  });
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +20,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               Text('Welcome to the Development Environment'),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => setEnvironmentCallback('default'),
                 child: Text('Logout'),
               ),
             ],

@@ -1,10 +1,14 @@
 import 'package:go_router/go_router.dart';
+import 'package:injectable/injectable.dart';
 import 'package:saas/application/presentation/login_screen.dart';
 import 'package:saas/application/router/app_router.dart';
-import 'package:saas/application/router/base_router.dart';
 
-class CommonRouter implements BaseRouter {
-  static GoRouter getRouter(SetEnvironmentCallback setEnvironmentCallback) {
+@Injectable(as: AppRouter, env: ['default'])
+class CommonRouter implements AppRouter {
+  @override
+  GetRouterFunction get getRouter => _getRouter;
+
+  GoRouter _getRouter(SetEnvironmentCallback setEnvironmentCallback) {
     return GoRouter(
       initialLocation: '/',
       routes: [
