@@ -81,6 +81,26 @@ add() {
      rm -rf $mainFolderName
      printf "Downloading Success!!!\n"
      printf "\n"
+     
+     printf "\n"
+     printf "Settuping config..."
+     # Define the path variable
+     CONFIG_FILE_PATH="$pathToNewContentFolder/config/config.dart"
+     CONFIG_FILE_CONTENT="import 'package:injectable/injectable.dart';
+
+const String enviromentName = '$name';
+const Environment $name = Environment(enviromentName);"
+
+     rm "$CONFIG_FILE_PATH/config.dart"
+     # Create the file and write the content
+     echo "$CONFIG_FILE_CONTENT" > "$CONFIG_FILE_PATH"
+
+     # Confirm the creation of the file
+     if [ -f "$CONFIG_FILE_PATH" ]; then
+     echo "File 'config.dart' has been created at $CONFIG_FILE_PATH"
+     else
+     echo "Failed to create the file at $CONFIG_FILE_PATH"
+     fi
 }
 
 remove() {
